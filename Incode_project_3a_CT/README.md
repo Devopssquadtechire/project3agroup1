@@ -1,5 +1,9 @@
 # project3agroup1
-
+# Authors: 
+    Chandrabose
+    Tahmina
+    Sibu
+    Anthony
 Introduction:
 Nevertheless, you decide to take up the challenge and prepare your action plan to meet the demand of the Mr.Coffee company:
 
