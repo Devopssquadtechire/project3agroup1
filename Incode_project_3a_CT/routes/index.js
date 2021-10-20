@@ -1,47 +1,45 @@
-const { response, json } = require('express');
-const express=require('express');
-const { schedules } = require('../data.js');
-const { users } = require('../data.js');
+const { response, json } = require("express");
+const express = require("express");
+const { schedules } = require("../data.js");
+const { users } = require("../data.js");
 const router = express.Router();
-const data=require('../data.js');
+const data = require("../data.js");
 
-router.get('/users',function(req,res)
-{
-res.send(users);
+router.get("/users", function (req, res) {
+  res.send(users);
 });
 
 //express will find anyting that i pass in the url after /users/ and consider id as index of object values
 //Also uses query sample as well
-router.get('/users/:id', function(req, res) {
-    let id = req.params.id;
-    console.log(id)
-    res.json(users[id]);
-    console.log(users[id]);
+router.get("/users/:id", function (req, res) {
+  let id = req.params.id;
+  console.log(id);
+  res.json(users[id]);
+  console.log(users[id]);
 });
 
-router.get('/users/:id/schedules', function(req, res) {
-    const id = parseInt(req.params.id);
-    const newScheduleArr = [];
-    for (ele in schedules){        
-        let schedule_user_id = schedules[ele].user_id
-        if (schedule_user_id === id){
-            newScheduleArr.push(schedules[ele])            
-        }
+router.get("/users/:id/schedules", function (req, res) {
+  const id = parseInt(req.params.id);
+  const newScheduleArr = [];
+  for (ele in schedules) {
+    let schedule_user_id = schedules[ele].user_id;
+    if (schedule_user_id === id) {
+      newScheduleArr.push(schedules[ele]);
     }
-    (newScheduleArr.length===0)?res.send("No schedules are found for this user"):res.json(newScheduleArr)
+  }
+  newScheduleArr.length === 0
+    ? res.send("No schedules are found for this user")
+    : res.json(newScheduleArr);
 });
 
-router.get('/schedules',function(req,res)
-{
-res.send(data.schedules);
+router.get("/schedules", function (req, res) {
+  res.send(data.schedules);
 });
 
-router.get('/schedules/:scheduleId',function(req,res)
-{
-    let id = req.params.scheduleId
-    res.json(schedules[id]);
+router.get("/schedules/:scheduleId", function (req, res) {
+  let id = req.params.scheduleId;
+  res.json(schedules[id]);
 });
-
 
 // Route to create a schedule :
 // ❒ It is possible to request the route '/schedules' in POST
@@ -50,22 +48,23 @@ router.get('/schedules/:scheduleId',function(req,res)
 // ❒ The route returns the newly created schedule
 // user_id"="bose","day"="3","start_at"="3PM","end_at"="4.30PM"
 
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 // Create application/x-www-form-urlencoded parser
-const urlencodedParser = bodyParser.urlencoded({ extended: false })
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-router.post('/schedules',urlencodedParser,function(req,res){
-    newScheduleItem = {"user_id":0,"day":0,"start_at":"","end_at":""}
-    newScheduleItem = req.body    
-    // newScheduleItem.user_id = parseInt(req.body.user_id)
-    // newScheduleItem.day = parseInt(req.body.day)
-    console.log(newScheduleItem)
-    console.log(req.body)
-    return res.end(JSON.stringify(req.body))
-    res.sendStatus(200)
-})
-
-
+router.post("/schedules", urlencodedParser, function (req, res) {
+  newScheduleItem = {
+    user_id: parseInt(req.body.user_id),
+    day: parseInt(req.body.day),
+    start_at: req.body.start_at,
+    end_at: req.body.end_at,
+  };
+  console.log(schedules);
+  schedules.push(newScheduleItem);
+  console.log("after", schedules);
+  return res.end(JSON.stringify(newScheduleItem));
+  res.sendStatus(200);
+});
 
 // Route to create a user :
 // ❒ It is possible to request the route '/users' in POST
@@ -73,15 +72,17 @@ router.post('/schedules',urlencodedParser,function(req,res){
 // ❒ The password is not saved in clear text, but it is encrypted in SHA256.
 // ❒ The route returns the newly created user
 
-router.post('/users',urlencodedParser,function(req,res){
-    newUserItem = {"firstname":"","lastname":"","email":"","password":""}
-    newUserItem = req.body
-    // newScheduleItem.user_id = parseInt(req.body.user_id)
-    // newScheduleItem.day = parseInt(req.body.day)
-    console.log(newUserItem)
-    console.log(req.body)
-    return res.end(JSON.stringify(req.body))
-    res.sendStatus(200)
-})
+router.post("/users", urlencodedParser, function (req, res) {
+  newUserItem = {
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    email: req.body.email,
+    password: req.body.password,
+  };
+  console.log(newUserItem);
+  console.log(req.body);
+  return res.end(JSON.stringify(newUserItem));
+  res.sendStatus(200);
+});
 
-module.exports=router;
+module.exports = router;
