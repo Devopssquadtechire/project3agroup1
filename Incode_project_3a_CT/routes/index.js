@@ -13,20 +13,23 @@ router.get("/users", function (req, res) {
 //Also uses query sample as well
 router.get("/users/:id", function (req, res) {
   let id = req.params.id;
-  console.log(id);
-  res.json(users[id]);
-  console.log(users[id]);
+  users[id] == undefined
+    ? res.send("No Users are found")
+    : res.json(users[id]);
 });
 
 router.get("/users/:id/schedules", function (req, res) {
   const id = parseInt(req.params.id);
-  const newScheduleArr = [];
-  for (ele in schedules) {
-    let schedule_user_id = schedules[ele].user_id;
-    if (schedule_user_id === id) {
-      newScheduleArr.push(schedules[ele]);
-    }
-  }
+  let newScheduleArr = [];
+  //Below is a simplified way of the implementation using for if 
+  // for (ele in schedules) {
+  //   let schedule_user_id = schedules[ele].user_id;
+  //   if (schedule_user_id === id) {
+  //     newScheduleArr.push(schedules[ele]);
+  //   }
+  // }
+  //Below is a optimized way of the implementation using for if 
+  newScheduleArr = schedules.filter(Object => {return Object.user_id == req.params.id})
   newScheduleArr.length === 0
     ? res.send("No schedules are found for this user")
     : res.json(newScheduleArr);
@@ -73,14 +76,16 @@ router.post("/schedules", urlencodedParser, function (req, res) {
 // ❒ The route returns the newly created user
 
 router.post("/users", urlencodedParser, function (req, res) {
+  var crypto = require('crypto');
+  const encryptPassword = crypto.createHash('sha256').update(req.body.password).digest('base64')
   newUserItem = {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
-    password: req.body.password,
+    password: encryptPassword,
   };
-  console.log(newUserItem);
-  console.log(req.body);
+  users.push(newUserItem)
+  console.log(newUserItem)
   return res.end(JSON.stringify(newUserItem));
   res.sendStatus(200);
 });
