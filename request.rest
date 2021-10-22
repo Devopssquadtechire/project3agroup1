@@ -1,0 +1,11 @@
+
+GET   http://localhost:3000/users
+Content-Type: application/json
+
+   {    
+        "firstname": "Shela",
+        "lastname": "Sork",
+        "email": "storm@gmail.com",
+        "password": "password"
+        
+        }
